@@ -1,11 +1,13 @@
+// vercel.json
 {
   "version": 2,
   "builds": [
-    { "src": "main.go", "use": "@vercel/go" },
+    { "src": "api/chat.go", "use": "@vercel/go" },
     { "src": "static/**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/chat", "dest": "/main.go" },
-    { "src": "/static/(.*)", "dest": "/static/$1" }
+    { "src": "/chat", "dest": "/api/chat.go" },
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/", "dest": "/static/index.html" }
   ]
 }
