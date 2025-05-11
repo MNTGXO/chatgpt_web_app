@@ -46,52 +46,45 @@ function appendMessage({role, content, time}) {
   chatbox.scrollTop = chatbox.scrollHeight;
 }
 async function sendMessage() {
-  const prompt = input.value.trim(); if(!prompt) return;
+  console.log("🔔 sendMessage() fired");          // ← debug
+  const prompt = input.value.trim();
+  if (!prompt) return;
+
+  // show the user’s message in chat
   const time = timestamp();
-  const userMsg = {role:'user', content:prompt, time};
-  appendMessage(userMsg); history.push(userMsg);
+  appendMessage({ role:'user', content: prompt, time });
+  history.push({ role:'user', content: prompt, time });
   localStorage.setItem('chatHistory', JSON.stringify(history));
-  input.value=''; sessionStorage.removeItem('draft');
+  input.value = ''; sessionStorage.removeItem('draft');
+
+  // show typing indicator
   typingIndicator.classList.remove('hidden');
 
-  const res = await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-  typingIndicator.classList.add('hidden');
-  const data = await res.json();
-  const botMsg = {role:'bot', content:data.response||data.error, time:timestamp()};
-  appendMessage(botMsg); history.push(botMsg);
-  localStorage.setItem('chatHistory', JSON.stringify(history));
+  try {
+    const res = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    console.log("→ fetch status:", res.status);    // ← debug
+
+    const data = await res.json();
+    console.log("→ response JSON:", data);        // ← debug
+
+    // always render something, even if it’s an error
+    const botText = data.response || data.error || "⚠️ No response received";
+    const botMsg = { role:'bot', content: botText, time: timestamp() };
+    appendMessage(botMsg);
+    history.push(botMsg);
+    localStorage.setItem('chatHistory', JSON.stringify(history));
+
+  } catch (err) {
+    console.error("🔥 sendMessage error:", err);
+    const botMsg = { role:'bot', content: `Error: ${err.message}`, time: timestamp() };
+    appendMessage(botMsg);
+    history.push(botMsg);
+    localStorage.setItem('chatHistory', JSON.stringify(history));
+  } finally {
+    typingIndicator.classList.add('hidden');
+  }
 }
-
-// --- Extras -----------------------------------------------
-resetBtn.onclick = ()=>{ localStorage.clear(); sessionStorage.clear(); chatbox.innerHTML=''; history=[]; };
-sendBtn.onclick = sendMessage;
-input.addEventListener('input', ()=> sessionStorage.setItem('draft', input.value));
-input.addEventListener('keydown', e=>{
-  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
-  if(e.key==='ArrowUp'&&!input.value){ input.value = history.slice(-1)[0]?.content||''; }
-});
-
-// Scroll-to-Bottom Button
-chatbox.addEventListener('scroll',()=>{
-  if(chatbox.scrollTop + chatbox.clientHeight < chatbox.scrollHeight - 20) 
-    scrollBtn.classList.remove('hidden');
-  else scrollBtn.classList.add('hidden');
-});
-scrollBtn.onclick = ()=> chatbox.scrollTop = chatbox.scrollHeight;
-
-// Export Chat
-exportBtn.onclick = ()=> {
-  const text = history.map(m=>`[${m.time}] ${m.role}: ${m.content}`).join('\n');
-  const blob = new Blob([text],{type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'chat_history.txt'; a.click();
-};
-
-// Search Messages
-searchInput.addEventListener('input',()=>{
-  const q = searchInput.value.toLowerCase();
-  document.querySelectorAll('.message').forEach(el=>{
-    el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
-  });
-});
