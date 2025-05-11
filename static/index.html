@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>ChatGPT App</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>ChatGPT Interface</h1>
+    <div id="controls">
+      <button id="exportBtn">Export Chat</button>
+      <input id="searchInput" placeholder="Search messages…">
+    </div>
+    <div id="chatbox"></div>
+    <button id="scrollBtn" class="hidden">↓ New Messages</button>
+    <div id="typingIndicator" class="hidden">Bot is typing…</div>
+    <textarea id="userInput" placeholder="Type your message…"></textarea>
+    <div class="buttons">
+      <button id="emojiBtn">😊</button>
+      <button id="sendBtn">Send</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+    <div id="emojiPicker" class="hidden"></div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
