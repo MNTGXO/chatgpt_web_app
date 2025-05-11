@@ -1,0 +1,12 @@
+name: chatgpt-web-app
+region: ewr
+type: web_service
+env: go
+source:
+  type: git
+  repo: https://github.com/mntgxo/chatgpt_web_app
+  branch: main
+build:
+  cmd: go build -o server
+run:
+  cmd: ./server
