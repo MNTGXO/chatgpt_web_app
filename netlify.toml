@@ -1,0 +1,7 @@
+[build]
+  command = "go build -o server"
+  publish = "static"
+[dev]
+  framework = "#custom"
+  command = "go run main.go"
+  port = 8080
