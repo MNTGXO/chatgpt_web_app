@@ -1,0 +1,23 @@
+:root {
+  --bg: #fafafa; --fg: #111;
+  --user-bg: #dcf8c6; --bot-bg: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111; --fg: #fafafa; }
+}
+body { margin:0; padding:0; font-family:sans-serif; background:var(--bg); color:var(--fg); }
+.container { max-width:600px; margin:auto; padding:1rem; }
+#controls { display:flex; gap: .5rem; margin-bottom:.5rem; }
+#chatbox { height:55vh; overflow-y:auto; border:1px solid #ccc; padding:.5rem; background:var(--bot-bg); position:relative; }
+.message { margin:.5rem 0; padding:.5rem; border-radius:8px; position:relative; }
+.message.user { background:var(--user-bg); text-align:right; }
+.message.bot { background:var(--bot-bg); text-align:left; }
+.timestamp { font-size:.75rem; opacity:.6; }
+.copyBtn { position:absolute; top:.25rem; right:.5rem; background:none;border:none;cursor:pointer;font-size:.85rem; }
+#scrollBtn { position:fixed; bottom:8rem; right:1rem; }
+.hidden { display:none; }
+#userInput { width:100%; height:4rem; resize:none; }
+.buttons { margin-top:.5rem; display:flex; gap:.5rem; }
+button { padding:.5rem 1rem; border:none; border-radius:4px; cursor:pointer; }
+#emojiPicker { position:absolute; bottom:5.5rem; left:1rem; background:#fff;border:1px solid #ccc;padding:.5rem; display:grid; grid-template-columns:repeat(6,1fr); gap:.25rem; }
+.emoji { cursor:pointer; font-size:1.25rem; }
